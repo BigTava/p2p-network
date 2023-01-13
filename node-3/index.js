@@ -35,8 +35,6 @@ function connect(address) {
     attemptingToConnectAddresses.push(address);
 
     const socket = new WebSocket(address);
-
-    // OPEN
     socket.on("open", () => {
       console.log("connection opened");
       attemptingToConnectAddresses.splice(
@@ -53,14 +51,12 @@ function connect(address) {
       );
     });
 
-    // CLOSE
     socket.on("close", () => {
       console.log("connection to " + address + " closed");
       const index = attemptingToConnectAddresses.indexOf(address);
       attemptingToConnectAddresses.splice(index, 1);
     });
 
-    // ERROR
     socket.on("error", () => {
       console.log("error connecting to " + address);
       const index = attemptingToConnectAddresses.indexOf(address);

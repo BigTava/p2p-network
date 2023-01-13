@@ -16,27 +16,27 @@ When you think you are done, run at least three nodes that all connect to each o
 
 1. Your `index.js` should create a web socket server listening on the port in its `.env` file
 
-1. When a web socket server starts, it should attempt to open a socket connection to all the addresses in the `known-peers.json` array. Use the predefined `knownPeers` variable
+2. When a web socket server starts, it should attempt to open a socket connection to all the addresses in the `known-peers.json` array. Use the predefined `knownPeers` variable
 
-1. Whenever a socket connection to a server is established, it should send a message that is a stringified JSON object of `{ type: 'HANDSHAKE', data: <array> }` to it. `data` should be an array of addresses that your server is connected to, including the server's own address
+3. Whenever a socket connection to a server is established, it should send a message that is a stringified JSON object of `{ type: 'HANDSHAKE', data: <array> }` to it. `data` should be an array of addresses that your server is connected to, including the server's own address
 
-1. When a server receives the above message, it should attempt to open a socket connection to all the addresses in the `data` array that it is not already connected to
+4. When a server receives the above message, it should attempt to open a socket connection to all the addresses in the `data` array that it is not already connected to
 
-1. You should keep track of all the addresses a server is connected to. You can use the predefined `connectedAddresses` array
+5. You should keep track of all the addresses a server is connected to. You can use the predefined `connectedAddresses` array
 
-1. When a socket disconnects, you should remove it from your `connectedAddresses` array
+6. When a socket disconnects, you should remove it from your `connectedAddresses` array
 
-1. You should keep track of the servers you are attempting to make a connection to so you don't try to make more than one connection to the same server. You can use the predefined `attemptingToConnectToAddress` variable. Be sure to remove an address after you establish a connection or fail to connect
+7. You should keep track of the servers you are attempting to make a connection to so you don't try to make more than one connection to the same server. You can use the predefined `attemptingToConnectToAddress` variable. Be sure to remove an address after you establish a connection or fail to connect
 
-1. A server should never attempt to create a socket connection to its own address
+8. A server should never attempt to create a socket connection to its own address
 
-1. You should clone your `node-1` folder at least two times
+9. You should clone your `node-1` folder at least two times
 
-1. All of your nodes should have the exact same code, with the exception of the `.env` file
+10. All of your nodes should have the exact same code, with the exception of the `.env` file
 
-1. You should have at least three nodes running, that use ports 4001, 4002, and 4003
+11. You should have at least three nodes running, that use ports 4001, 4002, and 4003
 
-1. All of your nodes should have an open socket connection to all other nodes
+12. All of your nodes should have an open socket connection to all other nodes
 
 Bonus: The `add-transaction.js` file is completed so that when you run `node add-transaction.js` from a node-x folder, it sends `{ type: 'TRANSACTION', data: <transaction_object> }` to your server. Make it so when a server receives this message, it uses the imported `writeTransactions` function to add it to its local transaction pool (`transactions.json`) and sends the same message to all the other servers, where they do the same thing. You may need to get creative to stop infinite loops of messages.
 
@@ -67,14 +67,14 @@ You should not change the `known-peers.json` file. It should have an array with 
 ```js
 // test 1
 const peers = await __helpers.getJsonFile(`${node1Folder}/known-peers.json`);
-assert.deepEqual(peers, ['ws://localhost:4001', 'ws://localhost:4003']);
+assert.deepEqual(peers, ["ws://localhost:4001", "ws://localhost:4003"]);
 ```
 
 You should have a Web Socket server listening on port 4001
 
 ```js
 // test 2
-assert.isTrue(await __helpers.canConnectToSocket('ws://localhost:4001'));
+assert.isTrue(await __helpers.canConnectToSocket("ws://localhost:4001"));
 ```
 
 When a node on your network receives a message (string) of `{ type: 'HANDSHAKE', data: [<addresses>] }`, it should create a socket connection to all the addresses in the `data` array that it isn't already connected to
@@ -83,7 +83,7 @@ When a node on your network receives a message (string) of `{ type: 'HANDSHAKE',
 // test 3
 const res = await __helpers.startSocketServerAndHandshake({
   myPort: 4103,
-  connectOnly: true
+  connectOnly: true,
 });
 assert.isTrue(res);
 ```
@@ -93,9 +93,9 @@ When a node opens socket connection, it should send a message (string) of `{ typ
 ```js
 // test 4
 const res = await __helpers.startSocketServerAndHandshake({ myPort: 4104 });
-assert.equal(res.type, 'HANDSHAKE');
-assert.typeOf(res.data, 'array');
-assert.include(res.data, 'ws://localhost:4001');
+assert.equal(res.type, "HANDSHAKE");
+assert.typeOf(res.data, "array");
+assert.include(res.data, "ws://localhost:4001");
 ```
 
 When your web socket server opens a socket connection, you should add the address to the `connectedAddresses` array and include it when sending the `HANDSHAKE` message
@@ -103,7 +103,7 @@ When your web socket server opens a socket connection, you should add the addres
 ```js
 // test 5
 const res = await __helpers.startSocketServerAndHandshake({ myPort: 4105 });
-assert.include(res.data, 'ws://localhost:4105');
+assert.include(res.data, "ws://localhost:4105");
 ```
 
 When one of your server's socket connections closes, you should remove the address from the `connectedAddresses` array and exclude it when sending the `HANDSHAKE` message
@@ -115,13 +115,13 @@ const res2 = await __helpers.startSocketServerAndHandshake({ myPort: 4206 });
 
 assert.include(
   res1.data,
-  'ws://localhost:4106',
-  'Your handshake message should include an open socket address'
+  "ws://localhost:4106",
+  "Your handshake message should include an open socket address"
 );
 assert.notInclude(
   res2.data,
-  'ws://localhost:4106',
-  'Your handshake message should not include a closed socket address'
+  "ws://localhost:4106",
+  "Your handshake message should not include a closed socket address"
 );
 ```
 
@@ -129,14 +129,14 @@ You should have a Web Socket server listening on port 4002
 
 ```js
 // test 7
-assert.isTrue(await __helpers.canConnectToSocket('ws://localhost:4002'));
+assert.isTrue(await __helpers.canConnectToSocket("ws://localhost:4002"));
 ```
 
 You should have a Web Socket server listening on port 4003
 
 ```js
 // test 8
-assert.isTrue(await __helpers.canConnectToSocket('ws://localhost:4003'));
+assert.isTrue(await __helpers.canConnectToSocket("ws://localhost:4003"));
 ```
 
 All of your `node-x` folders (nodes) should have the exact same code in their `index.js` file as the `node-1/index.js` file
@@ -145,7 +145,7 @@ All of your `node-x` folders (nodes) should have the exact same code in their `i
 // test 9
 const node1Index = await __helpers.getFile(`${node1Folder}/index.js`);
 const projectDirectory = await __helpers.getDirectory(projectFolder);
-const nodes = projectDirectory.filter(file => /^node-\d+$/.test(file));
+const nodes = projectDirectory.filter((file) => /^node-\d+$/.test(file));
 
 for (let i = 0; i < nodes.length; i++) {
   const indexFile = await __helpers.getFile(
@@ -160,7 +160,7 @@ for (let i = 0; i < nodes.length; i++) {
 assert.isAtLeast(
   nodes.length,
   2,
-  'You should have at least two nodes for this test to pass'
+  "You should have at least two nodes for this test to pass"
 );
 ```
 
@@ -170,60 +170,60 @@ All of your nodes should have an open socket connection to all other nodes
 // test 10
 const res1 = await __helpers.startSocketServerAndHandshake({
   myPort: 4110,
-  theirAddress: 'ws://localhost:4001'
+  theirAddress: "ws://localhost:4001",
 });
 const res2 = await __helpers.startSocketServerAndHandshake({
   myPort: 4210,
-  theirAddress: 'ws://localhost:4002'
+  theirAddress: "ws://localhost:4002",
 });
 const res3 = await __helpers.startSocketServerAndHandshake({
   myPort: 4310,
-  theirAddress: 'ws://localhost:4003'
+  theirAddress: "ws://localhost:4003",
 });
 
 assert.include(
   res1.data,
-  'ws://localhost:4001',
+  "ws://localhost:4001",
   `Your node on port 4001 should include 'ws://localhost:4001' in the 'data' array of its handshake message`
 );
 assert.include(
   res1.data,
-  'ws://localhost:4002',
+  "ws://localhost:4002",
   `Your node on port 4001 should include 'ws://localhost:4002' in the 'data' array of its handshake message`
 );
 assert.include(
   res1.data,
-  'ws://localhost:4003',
+  "ws://localhost:4003",
   `Your node on port 4001 should include 'ws://localhost:4003' in the 'data' array of its handshake message`
 );
 assert.include(
   res2.data,
-  'ws://localhost:4001',
+  "ws://localhost:4001",
   `Your node on port 4002 should include 'ws://localhost:4001' in the 'data' array of its handshake message`
 );
 assert.include(
   res2.data,
-  'ws://localhost:4002',
+  "ws://localhost:4002",
   `Your node on port 4002 should include 'ws://localhost:4002' in the 'data' array of its handshake message`
 );
 assert.include(
   res2.data,
-  'ws://localhost:4003',
+  "ws://localhost:4003",
   `Your node on port 4002 should include 'ws://localhost:4003' in the 'data' array of its handshake message`
 );
 assert.include(
   res3.data,
-  'ws://localhost:4001',
+  "ws://localhost:4001",
   `Your node on port 4003 should include 'ws://localhost:4001' in the 'data' array of its handshake message`
 );
 assert.include(
   res3.data,
-  'ws://localhost:4002',
+  "ws://localhost:4002",
   `Your node on port 4003 should include 'ws://localhost:4002' in the 'data' array of its handshake message`
 );
 assert.include(
   res3.data,
-  'ws://localhost:4003',
+  "ws://localhost:4003",
   `Your node on port 4003 should include 'ws://localhost:4003' in the 'data' array of its handshake message`
 );
 ```
@@ -231,7 +231,7 @@ assert.include(
 ### --before-all--
 
 ```js
-global.root = '.';
+global.root = ".";
 global.projectFolder = `${root}/build-a-peer-to-peer-network`;
 global.node1Folder = `${projectFolder}/node-1`;
 global.testsFolder = `${projectFolder}/.tests`;
